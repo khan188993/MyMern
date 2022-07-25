@@ -4,6 +4,7 @@ class ApiFeatures {
       this.queryStr = queryStr;
    }
 
+   //search product by name title,
    search() {
       //storing query key for search
       const keyword = this.queryStr.keyword ? { name: { $regex: this.queryStr.keyword, $options: 'i' } } : {};
@@ -16,6 +17,7 @@ class ApiFeatures {
       return this;
    }
 
+   //filter product with category and price
    filter() {
       const copyQuery = { ...this.queryStr };
       console.log(copyQuery);
@@ -25,9 +27,15 @@ class ApiFeatures {
          delete copyQuery[key];
       });
       console.log(copyQuery);
-    //   { category: 'Mobile' }
-    this.query = this.query.find({...copyQuery});
-    return this;
+      //   { category: 'Mobile' }
+
+      let queryStr = JSON.stringify(copyQuery);
+      console.log('after convert jsonString: ', queryStr);
+      queryStr = queryStr.replace(/\b(gt|lt|gte|lte)\b/g, (key) => `$${key}`);
+      console.log('after replace string: ', queryStr);
+
+      this.query = this.query.find({ ...JSON.parse(queryStr) });
+      return this;
    }
 }
 
