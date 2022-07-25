@@ -16,8 +16,9 @@ exports.createProducts = catchAsyncErrors(async (req, res) => {
 
 //get all products
 exports.getAllProducts = catchAsyncErrors(async (req, res) => {
+    let resultPerPage = 3;
    //sending apiFeature and collect products,
-   const apiFeature = new ApiFeatures(Product.find(), req.query).filter();
+   const apiFeature = new ApiFeatures(Product.find(), req.query).pagination(resultPerPage);
    const product = await apiFeature.query;
    // const product = await Product.find();
    res.status(200).json({ success: true, product });
