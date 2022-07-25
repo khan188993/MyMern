@@ -5,15 +5,29 @@ class ApiFeatures {
    }
 
    search() {
-    //storing query key for search
+      //storing query key for search
       const keyword = this.queryStr.keyword ? { name: { $regex: this.queryStr.keyword, $options: 'i' } } : {};
-      console.log(keyword)
+      console.log(keyword);
 
       //finding product of query by this.query products,
-      this.query = this.query.find({...keyword})
+      this.query = this.query.find({ ...keyword });
 
-      //return apiFeature for use Search function 
+      //return apiFeature for use Search function
       return this;
+   }
+
+   filter() {
+      const copyQuery = { ...this.queryStr };
+      console.log(copyQuery);
+      //remove all keyowrd and value without category
+      const removeFields = ['limit', 'page', 'keyword'];
+      removeFields.forEach((key) => {
+         delete copyQuery[key];
+      });
+      console.log(copyQuery);
+    //   { category: 'Mobile' }
+    this.query = this.query.find({...copyQuery});
+    return this;
    }
 }
 
