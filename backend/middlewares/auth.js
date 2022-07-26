@@ -1,11 +1,11 @@
 const ErrorHandler = require('../utils/errorHandle');
 const catchAsyncErrors = require('./catchAsyncErrors');
 const jwt = require('jsonwebtoken');
-const User = require("../model/userModel");
+const User = require('../model/userModel');
 
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
    const { token } = req.cookies;
-//    console.log(token)
+   //    console.log(token)
 
    if (!token) {
       return next(new ErrorHandler('Please Login to access this resource', 401));
@@ -13,8 +13,19 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
-   //to access all time user if login save into req object 
+   //to access all time user if login save into req object
    req.user = await User.findById(decodedData.id);
 
    next();
 });
+
+//autorization of admin :
+exports.authorizeRoles = (...roles) => {
+   return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+         return next(new ErrorHandler(`Role: ${req.user.role} is not allowed to access this resouce `, 403));
+      }
+
+      next();
+   };
+};
