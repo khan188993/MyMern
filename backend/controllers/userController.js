@@ -1,7 +1,7 @@
 const Users = require('../model/userModel');
 const ErrorHandler = require('../utils/errorHandle');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
-const sendJWTToken = require('../utils/jwtToken')
+const sendJWTToken = require('../utils/jwtToken');
 
 exports.getAllUser = async (req, res, next) => {
    const users = await Users.find();
@@ -16,7 +16,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
    const token = user.getJWTToken();
 
    //external file send token,
-   sendJWTToken(user,200,res,'register new user');
+   sendJWTToken(user, 200, res, 'register new user');
 });
 
 //Login User With jwt Token
@@ -50,9 +50,22 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
       token,
    }); */
 
-   sendJWTToken(user,200,res,'login user send');
-
+   sendJWTToken(user, 200, res, 'login user send');
 });
+
+//Logout User :
+exports.logoutUser = async (req, res, next) => {
+   //   res cookie remove and send logout message,
+   res.cookie('token', null, {
+      expires: new Date(Date.now()),
+      httpOnly: true,
+   });
+
+   res.status(200).json({
+      success: true,
+      message: 'logout user',
+   });
+};
 
 // /users/delete/62dea6a7dba87f12a0b41078
 exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
