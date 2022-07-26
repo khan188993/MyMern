@@ -15,12 +15,8 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
    const user = await Users.create(req.body);
    const token = user.getJWTToken();
 
-   res.status(200).json({
-      success: true,
-      message: 'add new user',
-      //   user,
-      token,
-   });
+   //external file send token,
+   sendJWTToken(user,200,res,'register new user');
 });
 
 //Login User With jwt Token
